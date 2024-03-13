@@ -10,3 +10,4 @@ plug-ins/**/TestPlayers
 *.vsconfig
 **/.vscode/*
 doBuilds
+**/xcshareddata

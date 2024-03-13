@@ -40,7 +40,10 @@ namespace Apple.GameKit
         public static GKLocalPlayer Local => _local ??= new GKLocalPlayer(Interop.GKLocalPlayer_GetLocal());
         
         #region FetchItems
-
+        private delegate void SuccessTaskFetchItemsCallback(long taskId, ulong timestamp, 
+            IntPtr publicKeyUrl, int publicKeyUrlLength, 
+            IntPtr signature, int signatureLength, 
+            IntPtr salt, int saltLength);
         /// <summary>
         /// Generates a signature so that a third-party server can authenticate the local player.
         /// </summary>
@@ -52,9 +55,17 @@ namespace Apple.GameKit
             return tcs.Task;
         }
 
-        [MonoPInvokeCallback(typeof(SuccessTaskCallback<GKIdentityVerificationResponse>))]
-        private static void OnFetchItems(long taskId, GKIdentityVerificationResponse response)
+        [MonoPInvokeCallback(typeof(SuccessTaskFetchItemsCallback))]
+        private static void OnFetchItems(long taskId, ulong timestamp,
+            IntPtr publicKeyUrl, int publicKeyUrlLength, 
+            IntPtr signature, int signatureLength, 
+            IntPtr salt, int saltLength)
         {
+            var response = new GKIdentityVerificationResponse(timestamp,
+                publicKeyUrl, publicKeyUrlLength, 
+                signature, signatureLength, 
+                salt, saltLength);
+
             InteropTasks.TrySetResultAndRemove(taskId, response);
         }
 
@@ -64,7 +75,7 @@ namespace Apple.GameKit
             InteropTasks.TrySetExceptionAndRemove<GKIdentityVerificationResponse>(taskId, new GameKitException(errorPointer));
         }
         #endregion
-        
+ 
         #region Authenticate
 
         /// <summary>
@@ -193,7 +204,7 @@ namespace Apple.GameKit
             [DllImport(InteropUtility.DLLName)]
             public static extern IntPtr GKLocalPlayer_GetLocal();
             [DllImport(InteropUtility.DLLName)]
-            public static extern void GKLocalPlayer_FetchItems(IntPtr pointer, long taskId, SuccessTaskCallback<GKIdentityVerificationResponse> onSuccess, NSErrorTaskCallback onError);
+            public static extern void GKLocalPlayer_FetchItems(IntPtr pointer, long taskId, SuccessTaskFetchItemsCallback onSuccess, NSErrorTaskCallback onError);
             [DllImport(InteropUtility.DLLName)]
             public static extern void GKLocalPlayer_Authenticate(long taskId, SuccessTaskCallback<IntPtr> onSuccess, NSErrorTaskCallback onError);
             [DllImport(InteropUtility.DLLName)]
