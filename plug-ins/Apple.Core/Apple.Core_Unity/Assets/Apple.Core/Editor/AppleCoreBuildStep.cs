@@ -32,8 +32,8 @@ namespace Apple.Core
                 var targetGuid = (buildTarget == BuildTarget.StandaloneOSX) ? pbxProject.TargetGuidByName(Application.productName) : pbxProject.GetUnityMainTargetGuid();
                 var frameworkGuid = pbxProject.GetUnityFrameworkTargetGuid();
 
-                pbxProject.AddBuildProperty(frameworkGuid, "ENABLE_BITCODE", "false");
-                pbxProject.AddBuildProperty(targetGuid, "ENABLE_BITCODE", "false");
+                if( frameworkGuid != null) pbxProject.AddBuildProperty(frameworkGuid, "ENABLE_BITCODE", "false");
+                if( targetGuid != null) pbxProject.AddBuildProperty(targetGuid, "ENABLE_BITCODE", "false");
 
                 Debug.Log($"AppleBuild: Writing bitcode changes to PBXProject {pbxProjectPath}...");
                 pbxProject.WriteToFile(pbxProjectPath);

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -35,7 +36,11 @@ namespace Apple.Core
                 if (buildStep.Value.IsEnabled)
                 {
                     Debug.Log($"AppleBuild: OnBeginPostProcess for step: {buildStep.Key}");
-                    buildStep.Value.OnBeginPostProcess(appleBuildProfile, buildTarget, pathToBuiltProject);
+                    try {
+                        buildStep.Value.OnBeginPostProcess(appleBuildProfile, buildTarget, pathToBuiltProject);
+                    } catch (Exception e) {
+                        Debug.LogException(new Exception($"AppleBuild: Build post process failed for step ${buildStep.Key}",e));
+                    }
                 }
                 else
                 {
@@ -102,7 +107,13 @@ namespace Apple.Core
                     if (buildStep.Value.IsEnabled)
                     {
                         Debug.Log($"AppleBuild: OnProcessInfoPlist for step: {buildStep.Key}");
-                        buildStep.Value.OnProcessInfoPlist(appleBuildProfile, buildTarget, pathToBuiltProject, infoPlist);
+                        try
+                        {
+                            buildStep.Value.OnProcessInfoPlist(appleBuildProfile, buildTarget, pathToBuiltProject, infoPlist);
+                        } catch (Exception e)
+                        {
+                            Debug.LogException(new Exception($"AppleBuild: OnProcessInfoPlist for step ${buildStep.Key} failed.",e));
+                        }
                     }
                 }
 
@@ -192,8 +203,15 @@ namespace Apple.Core
                 if (buildStep.Value.IsEnabled)
                 {
                     Debug.Log($"AppleBuild: OnProcessFrameworks for step: {buildStep.Key}");
-                    buildStep.Value.OnProcessFrameworks(appleBuildProfile, buildTarget, pathToBuiltProject, pbxProject);
+                    try
+                    {
+                        buildStep.Value.OnProcessFrameworks(appleBuildProfile, buildTarget, pathToBuiltProject, pbxProject);
+                    } catch (Exception e)
+                    {
+                        Debug.LogException(new Exception($"AppleBuild: OnProcessFrameworks for step: {buildStep.Key} failed",e));
+                    }
                 }
+
             }
 
             if (pbxProject != null)
@@ -214,7 +232,13 @@ namespace Apple.Core
                 if (buildStep.Value.IsEnabled)
                 {
                     Debug.Log($"AppleBuild: OnFinalizePostProcess for step: {buildStep.Key}");
-                    buildStep.Value.OnFinalizePostProcess(appleBuildProfile, buildTarget, pathToBuiltProject);
+                    try
+                    {
+                        buildStep.Value.OnFinalizePostProcess(appleBuildProfile, buildTarget, pathToBuiltProject);
+                    } catch (Exception e)
+                    {
+                        Debug.LogException(new Exception($"AppleBuild: OnFinalizePostProcess for step: {buildStep.Key}",e));
+                    }
                 }
             }
 
