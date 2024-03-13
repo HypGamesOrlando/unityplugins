@@ -149,6 +149,7 @@ public class AppleNativePluginProcessor : AssetPostprocessor
                         importer.SetCompatibleWithPlatform(BuildTarget.iOS, false);
                         importer.SetCompatibleWithPlatform(BuildTarget.tvOS, false);
                         importer.SetCompatibleWithPlatform(BuildTarget.StandaloneOSX, true);
+                        importer.DefineConstraints();
                     }
                 }
             }
