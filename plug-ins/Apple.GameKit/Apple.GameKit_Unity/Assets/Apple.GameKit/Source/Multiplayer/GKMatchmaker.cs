@@ -390,7 +390,6 @@ namespace Apple.GameKit.Multiplayer
 #if !UNITY_TVOS
             [DllImport(InteropUtility.DLLName)]
             public static extern void GKMatchmaker_StartGroupActivity(IntPtr gkMatchmakerPtr, InternalPlayerJoiningGroupActivityHandler playerJoiningGroupActivityHandler);
-#endif            
             [DllImport(InteropUtility.DLLName)]
             public static extern void GKMatchmaker_StopGroupActivity(IntPtr gkMatchmakerPtr);
 #endif
